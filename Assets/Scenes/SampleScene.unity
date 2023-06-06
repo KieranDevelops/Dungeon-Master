@@ -427,3 +427,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dec2b2604cf1ff846be8ef79d9572c7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterName: Paladin Raphael
+  currentLevel: 0
+  currentHealth: 10
+  skeletonHealth: 10
+  attack: 0
+  defense: 0
+  luck: 0
+  currentPlayerXp: 0
+  xpthreshold: 50
+  statpool: 15
