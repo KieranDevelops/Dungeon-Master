@@ -16,7 +16,7 @@ public class Levelling : MonoBehaviour
     public int defense = 0;//create a deffense int
     public int luck = 0;//create a luck int
     public int currentPlayerXp = 0;//player current exp
-    public int xpThreshold = 0;//exp threshold
+    public int xpThreshold = 25;//exp threshold
     public int statpool = 15;//create a stat pool
     public int playerPowerLevel = 0; // Players overall power 
 
@@ -30,8 +30,9 @@ public class Levelling : MonoBehaviour
 
     public float attackMultiplier = 125.25f;//A value used to multiply the characters attack value on level up
     bool isDead = true;// asking if the enemy or the player is dead
-    int xPGain = 25;
+    int xpGain = 25;
 
+    public int maxPower = 10;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,29 +44,10 @@ public class Levelling : MonoBehaviour
             "THE FURHTER YOU TRAVEL THE DARK YOUR NIGHTMARES WILL BECOME" + "PRESS TAB TO CONTINUE");//Debug you have entered the dungeons message
 
         #endregion
-        
+
         #region Character Stat generator
 
-        if(currentLevel == 1)
-        {
-            xpThreshold = 50;
-        }
-        else if(currentLevel == 2)
-        {
-            xpThreshold *= (int)1.5f;
-        }
-        else if(currentLevel == 3)
-        {
-            xpThreshold *= 2;
-        }
-        else if(currentLevel == 4)
-        {
-            xpThreshold *= (int)2.5f;
-        }
-        else
-        {
-            xpThreshold *= 3;
-        }
+        xpThreshold *= currentLevel;
 
         //calculate random number generated for each stat from statpool
         attack = Random.Range(0, statpool + 1);
@@ -80,7 +62,7 @@ public class Levelling : MonoBehaviour
         //Create a power level for player
         //This should be attack + def + luck 
         //Then divding the total by 3 for each catagory
-        playerPowerLevel = (attack + defense + luck) / 3; // Value of player over power
+        playerPowerLevel = (attack + defense + luck) - 3; // add all stat together and take 3 for each catergory to generate the player damage/ power
 
         #endregion
 
@@ -120,10 +102,10 @@ public class Levelling : MonoBehaviour
         //Create a power level for enemy 
         //This should be skeletonAttack + skeletonDef + skeletonLuck 
         //Then divding the total by 3 for each catagory
-        enemyPowerLevel = (skeletonAttack + skeletonDefense + skeletonLuck) / 3; // add all stat together than / by 3 
+        enemyPowerLevel = (skeletonAttack + skeletonDefense + skeletonLuck) - 3; // add all stat together and take 3 for each catergory to generate the player damage/ power
         #endregion
 
-        
+
     }
 
     // Update is called once per frame
@@ -131,7 +113,7 @@ public class Levelling : MonoBehaviour
     {
         #region Deciding attack
         // compare damage from both entities to work out who hits and who misses
-        int deciderPower = (playerPowerLevel / enemyPowerLevel) * 100;
+        float deciderPower = (playerPowerLevel / enemyPowerLevel) * 100;
 
         //Has a skeleton spawned
         //Ask what the skeletons level is and how much health it has and log it out to the console.
@@ -161,7 +143,9 @@ public class Levelling : MonoBehaviour
         if(skeletonHealth <= 0 && isDead)
         {
             skeletonHealth = skeletonLevel;
-            currentPlayerXp += xPGain;
+            currentPlayerXp += xpGain;
+            xpThreshold += xpGain;
+            maxPower = 10;
             Debug.Log("The Skeleton has been defeated, you have recieved 50Xp"); 
             
             
@@ -169,24 +153,12 @@ public class Levelling : MonoBehaviour
         else if(currentHealth <=0 && isDead)
         {
             currentHealth = 15f;
+            
             Debug.Log("You were not mighty enough restart dungeon");
             
         }
         
-        //can player level up? check Xp threshold
-        // yes they can
-        //press L to level up
-
-        if(Input.GetKeyDown(KeyCode.L))
-        {
-            if (currentPlayerXp >= xpThreshold)
-            {
-                Debug.Log("You have Leveled up to Lvl: " + currentLevel);
-            }
-
-        }
         
-
         //has the player pressed space bar
         if (Input.GetKeyDown(KeyCode.E) && skeletonHealth >= 0)
         {
@@ -195,13 +167,11 @@ public class Levelling : MonoBehaviour
             //compare two levels
             //print which player has won, how muchg damage they took
 
-            int maxPower = 10;
             playerPowerLevel = Random.Range(playerPowerLevel, maxPower);
-            enemyPowerLevel = Random.Range(enemyPowerLevel,maxPower);
-            
-            
+            enemyPowerLevel = Random.Range(enemyPowerLevel, maxPower);
 
 
+           
             if (playerPowerLevel > enemyPowerLevel)
             {
                 Debug.Log("You have hit the skeleton for: " + playerPowerLevel + "DMG");
@@ -214,17 +184,34 @@ public class Levelling : MonoBehaviour
                 currentHealth -= enemyPowerLevel;
                 Debug.Log("Your health is now: " + currentHealth);
             }
-            else //if(playerPowerLevel < 1  && enemyPowerLevel < 1)
+            else
             {  
                 Debug.Log("You both have missed each other completely");
+                playerPowerLevel = Random.Range(0, maxPower);
+                enemyPowerLevel = Random.Range(0, maxPower);
             }
+
+
+            //can player level up? check Xp threshold
+            //yes they can
+            //press L to level up
+
             
 
-        
         }
         #endregion
 
+        if (Input.GetKeyDown(KeyCode.L))
+            {
+                if (xpThreshold >= currentPlayerXp)
+                {
+                    currentLevel += 1;
+                    Debug.Log("You have Leveled up to Lvl: " + currentLevel);
+                }
 
+            }
 
     }
+    
+
 }
