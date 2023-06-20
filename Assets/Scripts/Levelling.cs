@@ -10,7 +10,7 @@ public class Levelling : MonoBehaviour
     //
     
     public string characterName = "Paladin Raphael";//create a player name
-    public int currentLevel = 1;//create a current lvl
+    public int currentLevel = 0;//create a current lvl
     public float currentHealth = 15f;//create health
     public int attack = 0; //create an attack int
     public int defense = 0;//create a deffense int
@@ -30,9 +30,9 @@ public class Levelling : MonoBehaviour
 
     public float attackMultiplier = 125.25f;//A value used to multiply the characters attack value on level up
     bool isDead = true;// asking if the enemy or the player is dead
-    int xpGain = 25;
+    int xpGain = 0;
 
-    public int maxPower = 10;
+    public int reRoll = 10;
     // Start is called before the first frame update
     void Start()
     {
@@ -46,8 +46,8 @@ public class Levelling : MonoBehaviour
         #endregion
 
         #region Character Stat generator
-
-        xpThreshold *= currentLevel;
+        currentLevel += 1;
+        
 
         //calculate random number generated for each stat from statpool
         attack = Random.Range(0, statpool + 1);
@@ -62,7 +62,7 @@ public class Levelling : MonoBehaviour
         //Create a power level for player
         //This should be attack + def + luck 
         //Then divding the total by 3 for each catagory
-        playerPowerLevel = (attack + defense + luck) - 3; // add all stat together and take 3 for each catergory to generate the player damage/ power
+        playerPowerLevel = (attack + defense + luck); // add all stat together
 
         #endregion
 
@@ -102,7 +102,7 @@ public class Levelling : MonoBehaviour
         //Create a power level for enemy 
         //This should be skeletonAttack + skeletonDef + skeletonLuck 
         //Then divding the total by 3 for each catagory
-        enemyPowerLevel = (skeletonAttack + skeletonDefense + skeletonLuck) - 3; // add all stat together and take 3 for each catergory to generate the player damage/ power
+        enemyPowerLevel = (skeletonAttack + skeletonDefense + skeletonLuck); // add all stat together   
         #endregion
 
 
@@ -113,7 +113,9 @@ public class Levelling : MonoBehaviour
     {
         #region Deciding attack
         // compare damage from both entities to work out who hits and who misses
-        float deciderPower = (playerPowerLevel / enemyPowerLevel) * 100;
+        // this will be used in the random range for each entity for attacking each other
+        // this will be rolled when E is pressed
+        float deciderPower = (playerPowerLevel * enemyPowerLevel) / 100;
 
         //Has a skeleton spawned
         //Ask what the skeletons level is and how much health it has and log it out to the console.
@@ -135,25 +137,28 @@ public class Levelling : MonoBehaviour
                 Debug.Log("Skeletonlvl: " + "3" + " Health: 20");
             }
         }
-         
+
         //has the skeleton or player died
         //yes they have
         //print out a death message and recieve a bonus on enemy death
+        // xp recievd will be randomised between 5 and 50
 
-        if(skeletonHealth <= 0 && isDead)
+        xpGain = Random.Range(5, 50);
+        if(skeletonHealth <= 0 && isDead == true)
         {
             skeletonHealth = skeletonLevel;
             currentPlayerXp += xpGain;
-            xpThreshold += xpGain;
-            maxPower = 10;
-            Debug.Log("The Skeleton has been defeated, you have recieved 50Xp"); 
+            currentHealth = 15f;
+            reRoll = 10;
+            Debug.Log("The Skeleton has been defeated, you have recieved: " + xpGain + "XP");
+            Debug.Log("To continue press 'TAB'");
             
             
         }
-        else if(currentHealth <=0 && isDead)
+        else if(currentHealth <=0 && isDead == true)
         {
             currentHealth = 15f;
-            
+            reRoll = 10;
             Debug.Log("You were not mighty enough restart dungeon");
             
         }
@@ -167,8 +172,8 @@ public class Levelling : MonoBehaviour
             //compare two levels
             //print which player has won, how muchg damage they took
 
-            playerPowerLevel = Random.Range(playerPowerLevel, maxPower);
-            enemyPowerLevel = Random.Range(enemyPowerLevel, maxPower);
+            playerPowerLevel = Random.Range(playerPowerLevel, (int)deciderPower + 1);
+            enemyPowerLevel = Random.Range(enemyPowerLevel, (int)deciderPower + 1);
 
 
            
@@ -186,30 +191,46 @@ public class Levelling : MonoBehaviour
             }
             else
             {  
+                playerPowerLevel = Random.Range((int)1f, reRoll + 1);
+                enemyPowerLevel = Random.Range((int)1f, reRoll + 1);
                 Debug.Log("You both have missed each other completely");
-                playerPowerLevel = Random.Range(0, maxPower);
-                enemyPowerLevel = Random.Range(0, maxPower);
+                
             }
-
-
-            //can player level up? check Xp threshold
-            //yes they can
-            //press L to level up
 
             
 
         }
         #endregion
 
+        //can player level up? check Xp threshold
+        //yes they can
+        //press L to level up this will check if the Xp threshold is has been met and decide if you can level up or not.  
         if (Input.GetKeyDown(KeyCode.L))
+        {
+            if (currentPlayerXp > xpThreshold)
             {
-                if (xpThreshold >= currentPlayerXp)
-                {
-                    currentLevel += 1;
-                    Debug.Log("You have Leveled up to Lvl: " + currentLevel);
-                }
+                currentLevel += 1;
+                statpool *= currentLevel;
 
+                playerPowerLevel = (playerPowerLevel * (int)(attackMultiplier / 100));
+                Debug.Log("New Power recieved: " + playerPowerLevel);
+                xpThreshold *= currentLevel;
+                Debug.Log("You have Levelled up to: " + currentLevel);
             }
+            else
+            {
+                Debug.Log("You do not have enough Xp for this!");
+            }
+
+        }
+
+
+        if(currentLevel == 5)
+        {
+            Debug.Log("YOU MAY RETURN TO THE HEAVENS PALADIN RAPHAEL, AS YOU HAVE FOUND YOUR PURPOSE AND ATONED FOR YOUR SINS!, YOU HAVE BEEN AWARDED THE DUNGEON MASTERS TITLE");
+            Debug.Log("Thank you for playing Dungeon master, it may be a bit broken however it can alwasy get better with time.");
+        }
+
 
     }
     
