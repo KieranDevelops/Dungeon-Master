@@ -8,7 +8,7 @@ public class Levelling : MonoBehaviour
     //These variables should be attack, defense and luck
     //Create a health, level, Xp and Xp threhold
     //
-    
+    #region player functions
     public string characterName = "Paladin Raphael";//create a player name
     public int currentLevel = 0;//create a current lvl
     public float currentHealth = 15f;//create health
@@ -19,7 +19,9 @@ public class Levelling : MonoBehaviour
     public int xpThreshold = 25;//exp threshold
     public int statpool = 15;//create a stat pool
     public int playerPowerLevel = 0; // Players overall power 
+    #endregion
 
+    #region enemy funtions
     public float skeletonHealth = 0f;//create Skeleton hp
     public int skeletonAttack = 0;
     public int skeletonDefense = 0;
@@ -27,6 +29,7 @@ public class Levelling : MonoBehaviour
     public int skeletonLevel = 0;// Levelling for enemy entity
     public int enemyPowerLevel = 0;
     //Potential for higher levelling enemies
+    #endregion
 
     public float attackMultiplier = 125.25f;//A value used to multiply the characters attack value on level up
     bool isDead = true;// asking if the enemy or the player is dead
@@ -45,7 +48,7 @@ public class Levelling : MonoBehaviour
 
         #endregion
 
-        #region Character Stat generator
+        #region Character Stat Generator
         currentLevel += 1;
         
 
@@ -80,7 +83,7 @@ public class Levelling : MonoBehaviour
         }
         else if(skeletonLevel == 2)
         {
-            skeletonHealth = skeletonLevel * (float)7.5;
+            skeletonHealth = skeletonLevel * 7.5f;
         }
         else
         {
@@ -124,17 +127,17 @@ public class Levelling : MonoBehaviour
             Debug.Log("A clattering sound approachs from the shadows, you face a skeleton." + "Press E to attack");//Debug an enemy has spawned (what entity) and its health value.
             if(skeletonLevel == 1)//We are asking if the skeleton is level 1 and if so log out it is level 1 and has the assigned health value.
             {
-                Debug.Log("Skeletonlvl: " + "1" + " Health: 10");
+                Debug.Log("Skeletonlvl: " + skeletonLevel + " Health: " + skeletonHealth);
                 
             }
             else if(skeletonLevel == 2)//We are asking if the skeleton is level 2 and if so log out it is level 2 and has the assigned health value.
             {
-                Debug.Log("Skeleton lvl: " + "2" + " Health: 15");
+                Debug.Log("Skeleton lvl: " + skeletonLevel + " Health: " + skeletonHealth);
                
             }
             else//We are asking if the skeleton is level 3 and if so log out it is level 3 and has the assigned health value.
             {
-                Debug.Log("Skeletonlvl: " + "3" + " Health: 20");
+                Debug.Log("Skeletonlvl: " + skeletonLevel + " Health: " + skeletonHealth);
             }
         }
 
