@@ -205,6 +205,7 @@ public class Levelling : MonoBehaviour
         }
         #endregion
 
+        #region Level checker and leveling up
         //can player level up? check Xp threshold
         //yes they can
         //press L to level up this will check if the Xp threshold is has been met and decide if you can level up or not.  
@@ -231,11 +232,11 @@ public class Levelling : MonoBehaviour
         if(currentLevel == 5)
         {
             Debug.Log("YOU MAY RETURN TO THE HEAVENS PALADIN RAPHAEL, AS YOU HAVE FOUND YOUR PURPOSE AND ATONED FOR YOUR SINS!, YOU HAVE BEEN AWARDED THE DUNGEON MASTERS TITLE");
-            Debug.Log("Thank you for playing Dungeon master, it may be a bit broken however it can alwasy get better with time.");
+            Debug.Log("Thank you for playing Dungeon master, it may be a bit broken however it can always get better with time.");
         }
 
 
     }
-    
 
+    #endregion
 }
